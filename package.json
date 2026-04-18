@@ -1,0 +1,64 @@
+{
+  "name": "team-task-manager-backend",
+  "version": "1.0.0",
+  "description": "Production-ready SaaS Team Task Management backend",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "worker": "node src/workers/notificationWorker.js",
+    "worker:dev": "nodemon src/workers/notificationWorker.js",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "migrate": "node src/db/migrate.js",
+    "seed": "node src/db/seed.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikhildhar1992/Team-Task-Manager-Backend.git"
+  },
+  "keywords": [
+    "saas",
+    "express",
+    "mysql",
+    "redis",
+    "bullmq",
+    "tasks"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nikhildhar1992/Team-Task-Manager-Backend/issues"
+  },
+  "homepage": "https://github.com/nikhildhar1992/Team-Task-Manager-Backend#readme",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "bcryptjs": "^3.0.3",
+    "bullmq": "^5.74.1",
+    "compression": "^1.8.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.3.2",
+    "helmet": "^8.1.0",
+    "ioredis": "^5.10.1",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.22.1",
+    "pino": "^10.3.1",
+    "pino-http": "^11.0.0",
+    "pino-pretty": "^13.1.3",
+    "rate-limit-redis": "^4.3.1",
+    "redis": "^5.12.1",
+    "swagger-ui-express": "^5.0.1",
+    "xss-clean": "^0.1.4",
+    "yamljs": "^0.3.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "eslint": "^10.2.1",
+    "eslint-config-prettier": "^10.1.8",
+    "nodemon": "^3.1.14",
+    "prettier": "^3.8.3"
+  }
+}
