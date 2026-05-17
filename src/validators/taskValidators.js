@@ -17,7 +17,7 @@ const createTaskSchema = z.object({
   description: z.string().max(1000).optional(),
   priority: taskPriority.optional(),
   status: taskStatus.optional(),
-  assignedTo: z.number().int().positive().optional(),
+  assignedTo: z.coerce.number().int().positive().optional(),
   deadline: z.iso.date().optional(),
 });
 
@@ -27,7 +27,7 @@ const updateTaskSchema = z
     description: z.string().max(1000).nullable().optional(),
     priority: taskPriority.optional(),
     status: taskStatus.optional(),
-    assignedTo: z.number().int().positive().nullable().optional(),
+    assignedTo: z.coerce.number().int().positive().nullable().optional(),
     deadline: z.iso.date().nullable().optional(),
   })
   .refine((value) => Object.keys(value).length > 0, {

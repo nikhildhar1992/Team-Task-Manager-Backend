@@ -58,7 +58,7 @@ Response JSON shape:
       .replace(/^```\s*/i, '')
       .replace(/\s*```$/i, '');
     parsed = JSON.parse(jsonText);
-  } catch (_error) {
+  } catch {
     throw new ApiError(502, 'Unable to parse AI response');
   }
 

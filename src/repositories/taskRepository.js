@@ -85,7 +85,7 @@ async function deleteTask({ teamId, taskId }) {
 
 function buildListQueryFilters({ teamId, filters, sortBy, sortOrder, limit, cursor }) {
   const whereClauses = ['team_id = ?'];
-  const params = [teamId];
+  const params = [Number(teamId)];
 
   if (filters.status) {
     whereClauses.push('status = ?');
@@ -102,13 +102,16 @@ function buildListQueryFilters({ teamId, filters, sortBy, sortOrder, limit, curs
     params.push(`%${filters.search}%`, `%${filters.search}%`);
   }
 
-  if (cursor) {
+  if (cursor && cursor.createdAt && Number.isFinite(Number(cursor.id))) {
     whereClauses.push('(created_at < ? OR (created_at = ? AND id < ?))');
-    params.push(cursor.createdAt, cursor.createdAt, cursor.id);
+    params.push(cursor.createdAt, cursor.createdAt, Number(cursor.id));
   }
 
   const direction = sortOrder === 'asc' ? 'ASC' : 'DESC';
   const orderByColumn = sortBy === 'priority' ? 'priority' : 'created_at';
+
+  const normalizedLimit = Number.isFinite(Number(limit)) ? Number(limit) : 20;
+  const cappedLimit = Math.max(1, Math.min(100, normalizedLimit));
 
   const sql = `
     SELECT
@@ -126,12 +129,13 @@ function buildListQueryFilters({ teamId, filters, sortBy, sortOrder, limit, curs
     FROM tasks
     WHERE ${whereClauses.join(' AND ')}
     ORDER BY ${orderByColumn} ${direction}, id ${direction}
-    LIMIT ?
+    LIMIT ${cappedLimit + 1}
   `;
 
-  params.push(limit + 1);
-
-  return { sql, params };
+  return {
+    sql,
+    params: params.map((value) => (value === undefined ? null : value)),
+  };
 }
 
 async function listTasks(params) {

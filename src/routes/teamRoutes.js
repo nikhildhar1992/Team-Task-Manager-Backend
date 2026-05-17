@@ -5,28 +5,29 @@ const authenticate = require('../middlewares/authMiddleware');
 const validate = require('../middlewares/validate');
 const { attachTeamMembership } = require('../middlewares/teamAccessMiddleware');
 const { authorize } = require('../middlewares/rbacMiddleware');
-const { teamIdParamSchema, addTeamMemberSchema, removeTeamMemberSchema } = require('../validators/teamValidators');
+const { teamIdParamSchema, createTeamSchema } = require('../validators/teamValidators');
 
 const router = express.Router();
 
 router.use(authenticate);
 
-router.get('/me', asyncHandler(teamController.listMyTeams));
+router.get('/', asyncHandler(teamController.listMyTeams));
 
-router.post(
-  '/:teamId/members',
-  validate({ params: teamIdParamSchema, body: addTeamMemberSchema }),
+router.post('/', validate({ body: createTeamSchema }), asyncHandler(teamController.createTeam));
+
+router.get(
+  '/:teamId',
+  validate({ params: teamIdParamSchema }),
   asyncHandler(attachTeamMembership),
-  authorize('members:manage'),
-  asyncHandler(teamController.addMember),
+  asyncHandler(teamController.getTeamById),
 );
 
 router.delete(
-  '/:teamId/members',
-  validate({ params: teamIdParamSchema, body: removeTeamMemberSchema }),
+  '/:teamId',
+  validate({ params: teamIdParamSchema }),
   asyncHandler(attachTeamMembership),
-  authorize('members:manage'),
-  asyncHandler(teamController.removeMember),
+  authorize('team:manage'),
+  asyncHandler(teamController.deleteTeam),
 );
 
 module.exports = router;

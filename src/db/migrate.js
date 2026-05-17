@@ -6,12 +6,18 @@ const logger = require('../utils/logger');
 async function runMigration() {
   const schemaPath = path.resolve(__dirname, 'schema.sql');
   const sql = await fs.readFile(schemaPath, 'utf8');
+  const statements = sql
+    .split(';')
+    .map((statement) => statement.trim())
+    .filter(Boolean);
 
   const pool = getPool();
   const connection = await pool.getConnection();
 
   try {
-    await connection.query(sql);
+    for (const statement of statements) {
+      await connection.query(statement);
+    }
     logger.info('database_migration_completed');
   } finally {
     connection.release();

@@ -1,11 +1,12 @@
 const authService = require('../services/authService');
+const env = require('../config/env');
 
 function setRefreshTokenCookie(res, refreshToken) {
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     sameSite: 'strict',
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 30 * 24 * 60 * 60 * 1000,
+    secure: env.isProd,
+    maxAge: env.refreshTokenTtlDays * 24 * 60 * 60 * 1000,
   });
 }
 

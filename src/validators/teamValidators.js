@@ -4,17 +4,11 @@ const teamIdParamSchema = z.object({
   teamId: z.coerce.number().int().positive(),
 });
 
-const addTeamMemberSchema = z.object({
-  targetUserId: z.number().int().positive(),
-  role: z.enum(['admin', 'member']),
-});
-
-const removeTeamMemberSchema = z.object({
-  targetUserId: z.number().int().positive(),
+const createTeamSchema = z.object({
+  name: z.string().min(2).max(120),
 });
 
 module.exports = {
   teamIdParamSchema,
-  addTeamMemberSchema,
-  removeTeamMemberSchema,
+  createTeamSchema,
 };

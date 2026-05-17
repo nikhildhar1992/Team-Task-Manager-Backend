@@ -1,7 +1,6 @@
 const ApiError = require('../utils/apiError');
 const { getCache, setCache, deleteByPrefix } = require('../utils/cache');
 const teamRepository = require('../repositories/teamRepository');
-const userRepository = require('../repositories/userRepository');
 
 function teamsCacheKey(userId) {
   return `teams:user:${userId}`;
@@ -20,48 +19,57 @@ async function listMyTeams(userId) {
   return teams;
 }
 
-async function addTeamMember({ requesterId, teamId, targetUserId, role }) {
-  const requesterMembership = await teamRepository.getMembership({
-    teamId,
-    userId: requesterId,
+async function createTeam({ actorId, payload }) {
+  const team = await teamRepository.createTeam({
+    name: payload.name,
+    createdBy: actorId,
   });
-
-  if (!requesterMembership || requesterMembership.role !== 'admin') {
-    throw new ApiError(403, 'Only team admins can manage members');
-  }
-
-  const targetUser = await userRepository.findById(targetUserId);
-  if (!targetUser) {
-    throw new ApiError(404, 'Target user not found');
-  }
-
   await teamRepository.addMember({
-    teamId,
-    userId: targetUserId,
-    role,
+    teamId: team.id,
+    userId: actorId,
+    role: 'admin',
   });
 
   await deleteByPrefix('teams:user:');
-
-  return teamRepository.getMembership({ teamId, userId: targetUserId });
+  return team;
 }
 
-async function removeTeamMember({ requesterId, teamId, targetUserId }) {
-  const requesterMembership = await teamRepository.getMembership({
-    teamId,
-    userId: requesterId,
-  });
+async function getTeamByIdForMember({ actorId, teamId }) {
+  await assertMembership({ actorId, teamId });
+  return teamRepository.findTeamById(teamId);
+}
 
-  if (!requesterMembership || requesterMembership.role !== 'admin') {
-    throw new ApiError(403, 'Only team admins can manage members');
+async function deleteTeam({ actorId, teamId }) {
+  const membership = await assertMembership({ actorId, teamId });
+  if (membership.role !== 'admin') {
+    throw new ApiError(403, 'Only team admins can delete team');
   }
 
-  await teamRepository.removeMember({ teamId, userId: targetUserId });
+  const existingTeam = await teamRepository.findTeamById(teamId);
+  if (!existingTeam) {
+    throw new ApiError(404, 'Team not found');
+  }
+
+  await teamRepository.deleteTeam(teamId);
   await deleteByPrefix('teams:user:');
+}
+
+async function assertMembership({ actorId, teamId }) {
+  const membership = await teamRepository.getMembership({
+    teamId,
+    userId: actorId,
+  });
+
+  if (!membership) {
+    throw new ApiError(403, 'User has no access to this team');
+  }
+
+  return membership;
 }
 
 module.exports = {
   listMyTeams,
-  addTeamMember,
-  removeTeamMember,
+  createTeam,
+  getTeamByIdForMember,
+  deleteTeam,
 };

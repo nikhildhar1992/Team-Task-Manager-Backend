@@ -1,4 +1,4 @@
-const rateLimit = require('express-rate-limit');
+const { rateLimit, ipKeyGenerator } = require('express-rate-limit');
 const { RedisStore } = require('rate-limit-redis');
 const env = require('../config/env');
 const { getRedisClient } = require('../config/redis');
@@ -21,7 +21,7 @@ function createLimiter({ windowMs, max, keyGenerator }) {
     standardHeaders: true,
     legacyHeaders: false,
     store: buildStoreIfAvailable(),
-    keyGenerator,
+    keyGenerator: keyGenerator || ((req) => ipKeyGenerator(req.ip)),
   });
 }
 
@@ -33,19 +33,19 @@ const globalLimiter = createLimiter({
 const loginLimiter = createLimiter({
   windowMs: env.rateLimit.windowMs,
   max: env.rateLimit.loginMaxRequests,
-  keyGenerator: (req) => `${req.ip}:login`,
+  keyGenerator: (req) => `${ipKeyGenerator(req.ip)}:login`,
 });
 
 const aiLimiter = createLimiter({
   windowMs: env.rateLimit.windowMs,
   max: env.rateLimit.aiMaxRequests,
-  keyGenerator: (req) => `${req.user?.id || req.ip}:ai`,
+  keyGenerator: (req) => `${req.user?.id || ipKeyGenerator(req.ip)}:ai`,
 });
 
 const userLimiter = createLimiter({
   windowMs: env.rateLimit.windowMs,
   max: env.rateLimit.maxRequests,
-  keyGenerator: (req) => req.user?.id?.toString() || req.ip,
+  keyGenerator: (req) => req.user?.id?.toString() || ipKeyGenerator(req.ip),
 });
 
 module.exports = {

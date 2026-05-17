@@ -3,7 +3,6 @@ const helmet = require('helmet');
 const cors = require('cors');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
-const xssClean = require('xss-clean');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const env = require('./config/env');
@@ -17,6 +16,7 @@ const openApiDoc = YAML.load(`${__dirname}/docs/openapi.yaml`);
 
 function createApp() {
   const app = express();
+  const allowedOrigins = new Set(env.corsOrigins);
 
   app.set('trust proxy', 1);
 
@@ -24,7 +24,12 @@ function createApp() {
   app.use(helmet());
   app.use(
     cors({
-      origin: env.corsOrigin,
+      origin(origin, callback) {
+        if (!origin || allowedOrigins.has(origin)) {
+          return callback(null, true);
+        }
+        return callback(new Error('Not allowed by CORS'));
+      },
       credentials: true,
     }),
   );
@@ -33,7 +38,6 @@ function createApp() {
   app.use(globalLimiter);
   app.use(express.json({ limit: env.maxPayloadSize }));
   app.use(express.urlencoded({ extended: true, limit: env.maxPayloadSize }));
-  app.use(xssClean());
 
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(openApiDoc));
   app.use('/api/v1', routes);

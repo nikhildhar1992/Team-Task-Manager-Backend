@@ -20,6 +20,10 @@ async function assertMembership({ teamId, userId }) {
 async function createTask({ actorId, teamId, payload }) {
   await assertMembership({ teamId, userId: actorId });
 
+  if (payload.assignedTo) {
+    await assertMembership({ teamId, userId: payload.assignedTo });
+  }
+
   const task = await taskRepository.createTask({
     teamId,
     title: payload.title,
@@ -49,7 +53,13 @@ async function listTasks({ actorId, teamId, query }) {
   await assertMembership({ teamId, userId: actorId });
 
   const parsedCursor = decodeCursor(query.cursor);
-  if (query.cursor && !parsedCursor) {
+  const hasValidCursor =
+    parsedCursor &&
+    typeof parsedCursor === 'object' &&
+    parsedCursor.createdAt &&
+    Number.isFinite(Number(parsedCursor.id));
+
+  if (query.cursor && !hasValidCursor) {
     throw new ApiError(400, 'Invalid cursor format');
   }
 
@@ -79,7 +89,12 @@ async function listTasks({ actorId, teamId, query }) {
     sortBy: normalizedQuery.sortBy,
     sortOrder: normalizedQuery.sortOrder,
     limit: normalizedQuery.limit,
-    cursor: parsedCursor,
+    cursor: hasValidCursor
+      ? {
+          createdAt: parsedCursor.createdAt,
+          id: Number(parsedCursor.id),
+        }
+      : null,
   });
 
   const hasNextPage = rows.length > normalizedQuery.limit;
@@ -119,6 +134,10 @@ async function updateTask({ actorId, teamId, taskId, payload }) {
     ...(payload.assignedTo !== undefined && { assigned_to: payload.assignedTo }),
     ...(payload.deadline !== undefined && { deadline: payload.deadline }),
   };
+
+  if (payload.assignedTo !== undefined && payload.assignedTo !== null) {
+    await assertMembership({ teamId, userId: payload.assignedTo });
+  }
 
   const updated = await taskRepository.updateTask({
     teamId,

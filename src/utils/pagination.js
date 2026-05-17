@@ -10,7 +10,7 @@ function decodeCursor(cursor) {
   try {
     const raw = Buffer.from(cursor, 'base64url').toString('utf8');
     return JSON.parse(raw);
-  } catch (_error) {
+  } catch {
     return null;
   }
 }

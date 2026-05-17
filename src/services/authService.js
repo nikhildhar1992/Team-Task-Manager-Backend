@@ -95,7 +95,7 @@ async function refresh(rawRefreshToken) {
   let payload;
   try {
     payload = verifyRefreshToken(rawRefreshToken);
-  } catch (_error) {
+  } catch {
     throw new ApiError(401, 'Invalid refresh token');
   }
 

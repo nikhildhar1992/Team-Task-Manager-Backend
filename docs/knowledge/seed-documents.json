@@ -1,0 +1,90 @@
+[
+  {
+    "sourceKey": "product-catalog-v1",
+    "title": "Product Catalog",
+    "category": "catalog",
+    "version": "v1",
+    "status": "active",
+    "content": "Product list includes Raisins, Almonds, Walnuts, Kesar, Rajma, Masala, Kashmiri chai, Kahwa, and Green tea. Almonds and walnuts are available in 250g and 500g packs. Kesar is available in 1g and 2g packs."
+  },
+  {
+    "sourceKey": "shipping-policy-v1",
+    "title": "Shipping Policy",
+    "category": "shipping",
+    "version": "v1",
+    "status": "active",
+    "content": "Orders are processed within 24 hours. Metro delivery usually takes 2-4 business days. Non-metro delivery takes 4-7 business days. Delivery timelines may extend during holidays."
+  },
+  {
+    "sourceKey": "returns-policy-v1",
+    "title": "Return and Refund Policy",
+    "category": "returns",
+    "version": "v1",
+    "status": "active",
+    "content": "Return requests can be raised within 48 hours of delivery for damaged or incorrect items. Refunds are processed to original payment methods within 5-7 business days after approval."
+  },
+  {
+    "sourceKey": "payment-methods-v1",
+    "title": "Payment Methods",
+    "category": "payments",
+    "version": "v1",
+    "status": "active",
+    "content": "Accepted payment methods include UPI, net banking, debit cards, credit cards, and cash on delivery in supported pin codes."
+  },
+  {
+    "sourceKey": "order-lifecycle-v1",
+    "title": "Order Lifecycle and Status",
+    "category": "orders",
+    "version": "v1",
+    "status": "active",
+    "content": "Order and checkout lifecycle: cart review, checkout, payment authorization, order placed, paid, packed, shipped, delivered. Cancelled status is terminal and cannot move back to active flow."
+  },
+  {
+    "sourceKey": "delivery-timeline-v1",
+    "title": "Delivery Timelines",
+    "category": "shipping",
+    "version": "v1",
+    "status": "active",
+    "content": "Same-city orders may arrive in 1-2 days. Inter-state orders commonly arrive in 3-6 days. Remote locations may require up to 10 days."
+  },
+  {
+    "sourceKey": "faq-v1",
+    "title": "Frequently Asked Questions",
+    "category": "faq",
+    "version": "v1",
+    "status": "active",
+    "content": "Customers can track orders from the orders page. For failed payments, users should retry after checking bank status. For missing products, support should be contacted with order id."
+  },
+  {
+    "sourceKey": "support-flow-v1",
+    "title": "Support and Escalation Flow",
+    "category": "support",
+    "version": "v1",
+    "status": "active",
+    "content": "Level 1 support handles first response within 4 business hours. Complex cases escalate to operations. Refund disputes escalate to finance within one business day."
+  },
+  {
+    "sourceKey": "promo-rules-v1",
+    "title": "Promo and Discount Rules",
+    "category": "promotions",
+    "version": "v1",
+    "status": "active",
+    "content": "Only one promo code can be used per order. Promo codes cannot be combined with flash sale pricing. Minimum cart value rules apply per campaign."
+  },
+  {
+    "sourceKey": "how-to-order-v1",
+    "title": "How to Order Guide",
+    "category": "guide",
+    "version": "v1",
+    "status": "active",
+    "content": "Users add products to cart, review totals, provide shipping address, choose payment method, and place the order. Order confirmation is sent after successful payment authorization. Checkout validation ensures subtotal and line totals are consistent."
+  },
+  {
+    "sourceKey": "team-task-domain-v1",
+    "title": "Team and Task Domain Rules",
+    "category": "team_task",
+    "version": "v1",
+    "status": "active",
+    "content": "Teams support create, list, details, and delete operations. Tasks are team-scoped and include title, description, status, priority, assigned user, and deadline. Task lifecycle statuses are todo, in_progress, and done. Team membership is required for task access."
+  }
+]

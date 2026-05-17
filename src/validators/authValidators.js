@@ -16,8 +16,13 @@ const refreshSchema = z.object({
   refreshToken: z.string().min(20),
 });
 
+const optionalRefreshSchema = z.object({
+  refreshToken: z.string().min(20).optional(),
+});
+
 module.exports = {
   registerSchema,
   loginSchema,
   refreshSchema,
+  optionalRefreshSchema,
 };

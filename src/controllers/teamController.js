@@ -9,35 +9,45 @@ async function listMyTeams(req, res) {
   });
 }
 
-async function addMember(req, res) {
-  const membership = await teamService.addTeamMember({
-    requesterId: req.user.id,
-    teamId: req.team.id,
-    targetUserId: req.body.targetUserId,
-    role: req.body.role,
+async function createTeam(req, res) {
+  const team = await teamService.createTeam({
+    actorId: req.user.id,
+    payload: req.body,
   });
 
-  res.status(200).json({
+  res.status(201).json({
     success: true,
-    data: membership,
+    data: team,
   });
 }
 
-async function removeMember(req, res) {
-  await teamService.removeTeamMember({
-    requesterId: req.user.id,
+async function getTeamById(req, res) {
+  const team = await teamService.getTeamByIdForMember({
+    actorId: req.user.id,
     teamId: req.team.id,
-    targetUserId: req.body.targetUserId,
   });
 
   res.status(200).json({
     success: true,
-    message: 'Member removed successfully',
+    data: team,
+  });
+}
+
+async function deleteTeam(req, res) {
+  await teamService.deleteTeam({
+    actorId: req.user.id,
+    teamId: req.team.id,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: 'Team deleted successfully',
   });
 }
 
 module.exports = {
   listMyTeams,
-  addMember,
-  removeMember,
+  createTeam,
+  getTeamById,
+  deleteTeam,
 };

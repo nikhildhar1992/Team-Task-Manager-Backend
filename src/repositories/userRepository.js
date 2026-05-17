@@ -40,8 +40,22 @@ async function findById(id) {
   return rows[0] || null;
 }
 
+async function searchUsers({ q, limit }) {
+  return query(
+    `
+      SELECT id, name, email
+      FROM users
+      WHERE name LIKE ? OR email LIKE ?
+      ORDER BY name ASC
+      LIMIT ?
+    `,
+    [`%${q}%`, `%${q}%`, limit],
+  );
+}
+
 module.exports = {
   createUser,
   findByEmail,
   findById,
+  searchUsers,
 };

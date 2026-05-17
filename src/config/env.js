@@ -4,6 +4,10 @@ dotenv.config();
 
 const accessTokenTtlMinutes = Number(process.env.ACCESS_TOKEN_TTL_MINUTES || 15);
 const refreshTokenTtlDays = Number(process.env.REFRESH_TOKEN_TTL_DAYS || 30);
+const corsOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 const env = {
   nodeEnv: process.env.NODE_ENV || 'development',
@@ -11,7 +15,7 @@ const env = {
   port: Number(process.env.PORT || 3000),
   appName: process.env.APP_NAME || 'team-task-manager-backend',
   logLevel: process.env.LOG_LEVEL || 'info',
-  corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  corsOrigins,
   maxPayloadSize: process.env.MAX_PAYLOAD_SIZE || '1mb',
   accessTokenTtlMinutes,
   refreshTokenTtlDays,

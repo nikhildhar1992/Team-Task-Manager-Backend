@@ -9,7 +9,15 @@ const router = express.Router();
 
 router.post('/register', validate({ body: registerSchema }), asyncHandler(authController.register));
 router.post('/login', loginLimiter, validate({ body: loginSchema }), asyncHandler(authController.login));
-router.post('/refresh', validate({ body: refreshSchema.partial() }), asyncHandler(authController.refresh));
-router.post('/logout', validate({ body: refreshSchema.partial() }), asyncHandler(authController.logout));
+router.post(
+  '/refresh',
+  validate({ body: refreshSchema.partial().optional() }),
+  asyncHandler(authController.refresh),
+);
+router.post(
+  '/logout',
+  validate({ body: refreshSchema.partial().optional() }),
+  asyncHandler(authController.logout),
+);
 
 module.exports = router;
