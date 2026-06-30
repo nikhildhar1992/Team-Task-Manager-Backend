@@ -2,7 +2,8 @@ const ApiError = require('../utils/apiError');
 const userRepository = require('../repositories/userRepository');
 const teamRepository = require('../repositories/teamRepository');
 const refreshTokenRepository = require('../repositories/refreshTokenRepository');
-const { hashPassword, comparePassword } = require('../utils/password');
+const env = require('../config/env');
+const { hashPassword } = require('../utils/password');
 const {
   signAccessToken,
   signRefreshToken,
@@ -66,13 +67,18 @@ async function register({ name, email, password, teamName }) {
 }
 
 async function login({ email, password }) {
-  const userWithPassword = await userRepository.findByEmail(email);
-  if (!userWithPassword) {
+  const normalizedEmail = email.trim().toLowerCase();
+
+  if (normalizedEmail !== env.loginEmail) {
     throw new ApiError(401, 'Invalid credentials');
   }
 
-  const isMatch = await comparePassword(password, userWithPassword.passwordHash);
-  if (!isMatch) {
+  if (!env.loginPassword || password !== env.loginPassword) {
+    throw new ApiError(401, 'Invalid credentials');
+  }
+
+  const userWithPassword = await userRepository.findByEmail(normalizedEmail);
+  if (!userWithPassword) {
     throw new ApiError(401, 'Invalid credentials');
   }
 

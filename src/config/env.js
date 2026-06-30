@@ -43,6 +43,8 @@ const env = {
     loginMaxRequests: Number(process.env.RATE_LIMIT_LOGIN_MAX || 20),
     aiMaxRequests: Number(process.env.RATE_LIMIT_AI_MAX || 10),
   },
+  loginEmail: 'nikhildhar92@gmail.com',
+  loginPassword: process.env.LOGINPASSWORD || '',
 };
 
 env.redis.url =

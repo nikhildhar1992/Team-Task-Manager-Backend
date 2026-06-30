@@ -11,10 +11,11 @@ async function runSeed() {
       INSERT INTO users (id, email, password_hash, name)
       VALUES
         (1, 'admin@example.com', ?, 'Seed Admin'),
-        (2, 'member@example.com', ?, 'Seed Member')
+        (2, 'member@example.com', ?, 'Seed Member'),
+        (3, 'nikhildhar92@gmail.com', ?, 'Nikhil Dhar')
       ON DUPLICATE KEY UPDATE name = VALUES(name)
     `,
-    [adminPassword, memberPassword],
+    [adminPassword, memberPassword, adminPassword],
   );
 
   await query(
@@ -30,7 +31,8 @@ async function runSeed() {
       INSERT INTO team_members (team_id, user_id, role)
       VALUES
         (1, 1, 'admin'),
-        (1, 2, 'member')
+        (1, 2, 'member'),
+        (1, 3, 'admin')
       ON DUPLICATE KEY UPDATE role = VALUES(role)
     `,
   );
