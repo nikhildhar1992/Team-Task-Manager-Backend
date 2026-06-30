@@ -1,0 +1,120 @@
+openapi: 3.0.3
+info:
+  title: Team Task Manager API
+  version: 1.0.0
+  description: Multi-tenant SaaS backend for team task management
+servers:
+  - url: http://localhost:3000/api/v1
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+paths:
+  /health:
+    get:
+      summary: Basic health status
+      responses:
+        '200':
+          description: Healthy
+  /health/full:
+    get:
+      summary: Full dependency health status
+      responses:
+        '200':
+          description: All dependencies healthy
+        '503':
+          description: One or more dependencies degraded
+  /auth/register:
+    post:
+      summary: Register user and bootstrap a team
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password, teamName]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                teamName:
+                  type: string
+      responses:
+        '201':
+          description: Registered
+  /auth/login:
+    post:
+      summary: Login user
+      responses:
+        '200':
+          description: Logged in
+  /auth/refresh:
+    post:
+      summary: Rotate refresh token and issue new access token
+      responses:
+        '200':
+          description: Refreshed
+  /auth/logout:
+    post:
+      summary: Logout and revoke refresh token
+      responses:
+        '200':
+          description: Logged out
+  /teams/me:
+    get:
+      summary: List teams current user belongs to
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Team list
+  /teams/{teamId}/tasks:
+    get:
+      summary: List tasks with cursor pagination and filters
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: teamId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Task list
+    post:
+      summary: Create task
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Task created
+  /teams/{teamId}/tasks/{taskId}:
+    patch:
+      summary: Update task
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Task updated
+    delete:
+      summary: Delete task
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Task deleted
+  /ai/generate-tasks:
+    post:
+      summary: Generate tasks from prompt using LLM
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Generated tasks
